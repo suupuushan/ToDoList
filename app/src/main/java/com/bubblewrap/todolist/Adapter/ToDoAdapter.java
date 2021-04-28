@@ -55,6 +55,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         holder.taskTitleTxt.setText(item.getTaskTitle());
         holder.taskDescTxt.setText(item.getTaskDesc());
         holder.taskDateTxt.setText(item.getTaskDate());
+        holder.taskTimeTxt.setText(item.getTaskTime());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,10 +66,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
                 a.putExtra("addTitle2", b.getTaskTitle());
                 a.putExtra("addDesc2", b.getTaskDesc());
                 a.putExtra("addDate2", b.getTaskDate());
+                a.putExtra("addTime2", b.getTaskTime());
                 activity.startActivityForResult(a,1);
                 activity.finish();
             }
-
         });
     }
 
@@ -99,12 +100,14 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         private TextView taskTitleTxt;
         private TextView taskDescTxt;
         private TextView taskDateTxt;
+        private TextView taskTimeTxt;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             taskTitleTxt = itemView.findViewById(R.id.taskTitle);
             taskDescTxt = itemView.findViewById(R.id.taskDesc);
             taskDateTxt = itemView.findViewById(R.id.taskDate);
+            taskTimeTxt = itemView.findViewById(R.id.taskTime);
         }
 
     }

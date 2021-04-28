@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/black</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <item name="colorAccent">#F63EA5</item>
+        <item name="colorAccent">#ff8303</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#101010</item>
         <item name="colorSecondaryVariant">#7E7E7E</item>
@@ -15,4 +15,41 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="DatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <!--selected Item color-->
+        <item name="colorControlActivated">#ff8303</item>
+        <!-- Highlight item color-->
+        <item name="colorControlHighlight">#6FD6FF</item>
+        <!--Calender Background color -->
+        <item name="android:windowBackground">@color/white</item>
+        <!-- Week TextColor-->
+        <item name="android:textColorSecondary">#ff8303</item>
+        <!-- Calender Number color arrow color (< >) -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <!--day , month-->
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+        <!-- year-->
+        <item name="android:textColorSecondaryInverse">@color/white</item>
+    </style>
+
+    <style name="TimePicker" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="colorAccent">@color/white</item>
+        <!--selected Item color-->
+        <item name="colorControlActivated">#ff8303</item>
+        <!-- Highlight item color-->
+        <item name="colorControlHighlight">#6FD6FF</item>
+        <!--Calender Background color -->
+        <item name="android:windowBackground">@color/white</item>
+        <!-- Week TextColor-->
+        <item name="android:textColorSecondary">#ff8303</item>
+        <!-- Calender Number color arrow color (< >) -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!--day , month-->
+        <item name="android:textColorPrimaryInverse">@color/white</item>
+        <!-- year-->
+        <item name="android:textColorSecondaryInverse">@color/colorPrimary</item>
+    </style>
+
 </resources>

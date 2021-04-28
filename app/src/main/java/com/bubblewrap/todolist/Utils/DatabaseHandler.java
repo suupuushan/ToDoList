@@ -26,6 +26,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TASK_TITLE = "task_title";
     private static final String TASK_DESC = "task_desc";
     private static final String TASK_DATE = "task_date";
+    private static final String TASK_TIME = "task_time";
 
     private SQLiteDatabase db;
 
@@ -41,7 +42,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         TASK_TITLE + " TEXT, " +
                         TASK_DESC + " TEXT, " +
-                        TASK_DATE + " TEXT);";
+                        TASK_DATE + " TEXT, " +
+                        TASK_TIME + " TEXT);";
         db.execSQL(query);
     }
 
@@ -67,6 +69,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         task.setTaskTitle(cur.getString(cur.getColumnIndex(TASK_TITLE)));
                         task.setTaskDesc(cur.getString(cur.getColumnIndex(TASK_DESC)));
                         task.setTaskDate(cur.getString(cur.getColumnIndex(TASK_DATE)));
+                        task.setTaskTime(cur.getString(cur.getColumnIndex(TASK_TIME)));
                         taskList.add(task);
                     }
                     while (cur.moveToNext());
@@ -87,6 +90,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(TASK_TITLE, task.getTaskTitle());
         cv.put(TASK_DESC, task.getTaskDesc());
         cv.put(TASK_DATE, task.getTaskDate());
+        cv.put(TASK_TIME, task.getTaskTime());
         db.insert(TODO_TABLE, null, cv);
     }
 
@@ -96,6 +100,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cv.put(TASK_TITLE, task.getTaskTitle());
         cv.put(TASK_DESC, task.getTaskDesc());
         cv.put(TASK_DATE, task.getTaskDate());
+        cv.put(TASK_TIME, task.getTaskTime());
         long result = db.update(TODO_TABLE, cv, "id=?", new String[]{id});
         if (result == -1){
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
