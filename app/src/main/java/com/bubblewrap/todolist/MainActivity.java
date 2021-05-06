@@ -69,15 +69,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-//        int id = getIntent().getIntExtra("id", 0);
-//        String title = getIntent().getStringExtra("title");
-//        String desc = getIntent().getStringExtra("desc");
-//        System.out.println(id);
-//        if (id != 0)
-//        {
-//            startAlarm(id, title, desc);
-//        }
-
         taskList = myDB.getAllTasks();
         Collections.reverse(taskList);
 
@@ -85,34 +76,5 @@ public class MainActivity extends AppCompatActivity{
         tasksRecyclerView.setAdapter(tasksAdapter);
         tasksAdapter.notifyDataSetChanged();
 
-//        deleted = tasksAdapter.deleted();
-//        System.out.println("test main");
-//        System.out.println(deleted);
-//        deleteAlarm(deleted);
-//
-//        Toast.makeText(this, "halo", Toast.LENGTH_SHORT).show();
-
     }
-
-//    private void startAlarm(int id, String title, String desc){
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, NotifReceiver.class);
-//        intent.putExtra("id", id);
-//        intent.putExtra("title", title);
-//        intent.putExtra("desc", desc);
-//        dict.put(id, cTime);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cTime.getTimeInMillis(), pendingIntent);
-//    }
-//
-//    public void deleteAlarm(int id){
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(this, NotifReceiver.class);
-//        intent.putExtra("id", id);
-//        intent.putExtra("title", "title");
-//        intent.putExtra("desc", "desc");
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, deleted, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        alarmManager.cancel(pendingIntent);
-//    }
-
 }

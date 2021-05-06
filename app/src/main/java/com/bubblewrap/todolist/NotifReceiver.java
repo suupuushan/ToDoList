@@ -22,8 +22,6 @@ import static com.bubblewrap.todolist.App.CHANNEL_1_ID;
 
 public class NotifReceiver extends BroadcastReceiver {
 
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -32,7 +30,7 @@ public class NotifReceiver extends BroadcastReceiver {
         String desc = intent.getStringExtra("desc");
 
         Notification builder = new NotificationCompat.Builder(context, CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.ic_one)
+                .setSmallIcon(R.drawable.ic_baseline_notifications)
                 .setContentTitle(title)
                 .setContentText(desc)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

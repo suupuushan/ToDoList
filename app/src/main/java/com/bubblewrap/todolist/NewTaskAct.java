@@ -54,6 +54,7 @@ public class NewTaskAct extends AppCompatActivity {
         btnDate = findViewById(R.id.btnDate);
         btnTime = findViewById(R.id.btnTime);
 
+        cTime = Calendar.getInstance();
 
         btnCreateTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,24 +112,22 @@ public class NewTaskAct extends AppCompatActivity {
     }
 
     private void showDateDialog() {
-        Calendar calendar = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                cTime.set(Calendar.YEAR, year);
+                cTime.set(Calendar.MONTH, month);
+                cTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy");
-                addDate.setText(simpleDateFormat.format(calendar.getTime()));
+                addDate.setText(simpleDateFormat.format(cTime.getTime()));
             }
         };
 
-        new DatePickerDialog(NewTaskAct.this, R.style.DatePicker, dateSetListener, calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+        new DatePickerDialog(NewTaskAct.this, R.style.DatePicker, dateSetListener, cTime.get(Calendar.YEAR),
+                        cTime.get(Calendar.MONTH), cTime.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void showTimeDialog() {
-        cTime = Calendar.getInstance();
         TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -152,6 +151,6 @@ public class NewTaskAct extends AppCompatActivity {
         intent.putExtra("desc", desc);
         dict.put(id, cTime);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cTime.getTimeInMillis(), 60000,pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cTime.getTimeInMillis(), pendingIntent);
     }
 }
