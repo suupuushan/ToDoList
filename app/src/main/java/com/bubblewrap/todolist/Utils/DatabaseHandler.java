@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.bubblewrap.todolist.Adapter.ToDoAdapter;
 import com.bubblewrap.todolist.Model.ToDoModel;
 
 import java.util.ArrayList;
@@ -84,29 +83,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return taskList;
     }
 
-    public void insertTask(ToDoModel task){
-        db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(TASK_TITLE, task.getTaskTitle());
-        cv.put(TASK_DESC, task.getTaskDesc());
-        cv.put(TASK_DATE, task.getTaskDate());
-        cv.put(TASK_TIME, task.getTaskTime());
-        db.insert(TODO_TABLE, null, cv);
+    public Cursor getLastData()
+    {
+        SQLiteDatabase DB = this.getWritableDatabase();
+        Cursor cursor = DB.rawQuery("Select * from " + TODO_TABLE, null);
+        return cursor;
     }
 
-    public void updateTask(String id, ToDoModel task){
+    public int insertTask(ToDoModel task){
         db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(TASK_TITLE, task.getTaskTitle());
         cv.put(TASK_DESC, task.getTaskDesc());
         cv.put(TASK_DATE, task.getTaskDate());
         cv.put(TASK_TIME, task.getTaskTime());
-        long result = db.update(TODO_TABLE, cv, "id=?", new String[]{id});
-        if (result == -1){
-            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show();
-        }
+        int id = (int) db.insert(TODO_TABLE, null, cv);
+        return id;
+    }
+
+    public int updateTask(String id, ToDoModel task){
+        db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(TASK_TITLE, task.getTaskTitle());
+        cv.put(TASK_DESC, task.getTaskDesc());
+        cv.put(TASK_DATE, task.getTaskDate());
+        cv.put(TASK_TIME, task.getTaskTime());
+        db.update(TODO_TABLE, cv, "id=?", new String[]{id});
+        return 0;
     }
 
     public void deleteTask(int id){

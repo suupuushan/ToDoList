@@ -3,6 +3,7 @@
     package="com.bubblewrap.todolist">
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,6 +20,8 @@
         <activity android:name=".EditTask" />
         <activity android:name=".NewTaskAct" />
         <activity android:name=".MainActivity"/>
+
+        <receiver android:name=".NotifReceiver"/>
     </application>
 
 </manifest>

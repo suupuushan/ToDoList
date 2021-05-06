@@ -1,9 +1,15 @@
 package com.bubblewrap.todolist;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
@@ -13,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.bubblewrap.todolist.Adapter.ToDoAdapter;
 import com.bubblewrap.todolist.Model.ToDoModel;
@@ -21,20 +28,18 @@ import com.bubblewrap.todolist.Utils.DatabaseHandler;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static com.bubblewrap.todolist.App.CHANNEL_1_ID;
+
 public class EditTask extends AppCompatActivity {
 
     private ToDoAdapter adapter;
     EditText title, desc;
     TextView date, time;
-    String id;
-    String titleTXT;
-    String descTXT;
-    String dateTXT;
-    String timeTXT;
-    Button btnSaveTask;
-    Button btnCancelUpdate;
-    Button btnDate2;
-    Button btnTime2;
+    String id, titleTXT, descTXT, dateTXT, timeTXT;
+    Button btnSaveTask, btnCancelUpdate, btnDate2, btnTime2;
+    NotificationManagerCompat notificationManager;
+    Calendar timeAfter, timeBefore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,7 @@ public class EditTask extends AppCompatActivity {
         btnTime2 = findViewById(R.id.btnTime2);
         btnSaveTask = findViewById(R.id.btnSaveTask);
         btnCancelUpdate = findViewById(R.id.btnCancelUpdate);
+        notificationManager = NotificationManagerCompat.from(this);
         getAndSetIntentData();
         btnSaveTask.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +71,7 @@ public class EditTask extends AppCompatActivity {
                 task.setTaskDate(date2);
                 task.setTaskTime(time2);
                 myDB.updateTask(id, task);
+                updateAlarm(Integer.parseInt(id), title2, desc2);
                 Intent intent = new Intent(EditTask.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -132,18 +139,35 @@ public class EditTask extends AppCompatActivity {
     }
 
     private void showTimeDialog() {
-        Calendar calendar = Calendar.getInstance();
+        timeAfter = Calendar.getInstance();
         TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
+                timeAfter.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                timeAfter.set(Calendar.MINUTE, minute);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-                time.setText(simpleDateFormat.format(calendar.getTime()));
+                time.setText(simpleDateFormat.format(timeAfter.getTime()));
             }
         };
 
-        new TimePickerDialog(EditTask.this, R.style.DatePicker ,timeSetListener, calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE), false).show();
+        new TimePickerDialog(EditTask.this, R.style.TimePicker ,timeSetListener, timeAfter.get(Calendar.HOUR_OF_DAY),
+                timeAfter.get(Calendar.MINUTE), false).show();
+    }
+
+    private void updateAlarm(int id, String title, String desc){
+        Calendar timeBefore = NewTaskAct.dict.get(id);
+        System.out.println(timeBefore);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, NotifReceiver.class);
+        intent.putExtra("id", id);
+        intent.putExtra("title", title);
+        intent.putExtra("desc", desc);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        if (timeAfter == null){
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeBefore.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAfter.getTimeInMillis(), pendingIntent);
+        }
     }
 }

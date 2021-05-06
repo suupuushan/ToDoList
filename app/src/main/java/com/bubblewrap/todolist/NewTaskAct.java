@@ -3,17 +3,22 @@ package com.bubblewrap.todolist;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.bubblewrap.todolist.Adapter.ToDoAdapter;
 import com.bubblewrap.todolist.Model.ToDoModel;
@@ -21,6 +26,8 @@ import com.bubblewrap.todolist.Utils.DatabaseHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Hashtable;
+import java.util.List;
 
 public class NewTaskAct extends AppCompatActivity {
 
@@ -28,12 +35,9 @@ public class NewTaskAct extends AppCompatActivity {
     TextView addDate, addTime;
     Button btnDate, btnTime;
     Button btnCreateTask, btnCancelCreate;
-    ToDoAdapter taskAdapter;
-
-
-    public static NewTaskAct newInstance() {
-        return new NewTaskAct();
-    }
+    public static int id;
+    public static Calendar cTime;
+    public static Hashtable<Integer, Calendar> dict = new Hashtable<Integer, Calendar>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +54,7 @@ public class NewTaskAct extends AppCompatActivity {
         btnDate = findViewById(R.id.btnDate);
         btnTime = findViewById(R.id.btnTime);
 
+
         btnCreateTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,7 +68,8 @@ public class NewTaskAct extends AppCompatActivity {
                 task.setTaskDesc(descTXT);
                 task.setTaskDate(dateTXT);
                 task.setTaskTime(timeTXT);
-                myDB.insertTask(task);
+                int id = myDB.insertTask(task);
+                startAlarm(id, titleTXT, descTXT);
 
                 Intent intent = new Intent(NewTaskAct.this, MainActivity.class);
                 startActivity(intent);
@@ -93,6 +99,7 @@ public class NewTaskAct extends AppCompatActivity {
                 showTimeDialog();
             }
         });
+
     }
 
     @Override
@@ -121,18 +128,30 @@ public class NewTaskAct extends AppCompatActivity {
     }
 
     private void showTimeDialog() {
-        Calendar calendar = Calendar.getInstance();
+        cTime = Calendar.getInstance();
         TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
+                cTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                cTime.set(Calendar.MINUTE, minute);
+                cTime.set(Calendar.SECOND, 0);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-                addTime.setText(simpleDateFormat.format(calendar.getTime()));
+                addTime.setText(simpleDateFormat.format(cTime.getTime()));
             }
         };
 
-        new TimePickerDialog(NewTaskAct.this, R.style.TimePicker ,timeSetListener, calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE), false).show();
+        new TimePickerDialog(NewTaskAct.this, R.style.TimePicker ,timeSetListener, cTime.get(Calendar.HOUR_OF_DAY),
+                cTime.get(Calendar.MINUTE), false).show();
+    }
+
+    private void startAlarm(int id, String title, String desc){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, NotifReceiver.class);
+        intent.putExtra("id", id);
+        intent.putExtra("title", title);
+        intent.putExtra("desc", desc);
+        dict.put(id, cTime);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, cTime.getTimeInMillis(), 60000,pendingIntent);
     }
 }
